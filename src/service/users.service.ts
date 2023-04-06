@@ -1,10 +1,10 @@
+import { IUsers } from '../interfaces/Users'
 import { API } from '../util/API'
 
-const getUsers = async () => {
-  const data = await API.get('users.json')
-  console.log(data)
+const getAllUsers = async () => {
+  return API.get<IUsers>('/users.json')
 }
 
 export const Api = {
-  getUsers,
+  getAllUsers,
 }

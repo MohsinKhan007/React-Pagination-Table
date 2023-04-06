@@ -1,14 +1,7 @@
-import React, { useEffect } from 'react'
-import { Api } from './service/users.service'
+import React from 'react'
 
-function App() {
-  useEffect(() => {
-    console.log(Api.getUsers())
+import { AppRoutes } from './Routes'
 
-    return () => {}
-  }, [])
-
-  return <div className=""></div>
-}
+const App = () => <AppRoutes />
 
 export default App
