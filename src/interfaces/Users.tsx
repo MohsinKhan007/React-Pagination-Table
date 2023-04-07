@@ -1,11 +1,13 @@
 export interface IUsers {
   items: [
     {
-      id: string
+      userid: string
       name: string
       email: string
-      dateCreated: Date
-      dateModified: Date
+      namelast: string
+      namefirst: string
+      datecreated: number
+      datemodified: number
     }
   ]
   totalCount: number
@@ -13,11 +15,13 @@ export interface IUsers {
 export const initialUsers: IUsers = {
   items: [
     {
-      id: '',
+      userid: '',
       name: '',
       email: '',
-      dateCreated: new Date(),
-      dateModified: new Date(),
+      namelast: '',
+      namefirst: '',
+      datecreated: 0,
+      datemodified: 0,
     },
   ],
   totalCount: 0,

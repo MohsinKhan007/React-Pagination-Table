@@ -7,7 +7,7 @@ export const Header = () => {
       <nav className="navbar navbar-light bg-light">
         <Link className="navbar-brand" to={'/'}>
           <img
-            src={`sitoo-logo`}
+            src={`sitoo-logo.png`}
             width="100"
             height="40"
             className="d-inline-block align-top"
@@ -31,7 +31,7 @@ export const Header = () => {
           <ul className="navbar-nav">
             <li className="nav-item">
               <NavLink
-                to={`/users`}
+                to={`/`}
                 className={({ isActive }) =>
                   isActive ? 'active nav-link' : ' nav-link'
                 }

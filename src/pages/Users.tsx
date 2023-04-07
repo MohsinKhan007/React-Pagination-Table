@@ -1,9 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Layout } from '../components/Layout'
 import useFetch from '../hooks/useFetch'
+import { DataGrid } from '../components/DataGrid'
 
 const Users = () => {
-  const { data, error, loading } = useFetch('fetchAllUsers')
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const limit = 10
+  const { data, error, loading } = useFetch(
+    currentPage,
+    limit,
+    'fetchAllUsers'
+  )
   if (loading)
     return (
       <Layout>
@@ -19,8 +26,9 @@ const Users = () => {
 
   return (
     <Layout>
-      <p style={{ overflow: 'hidden', height: '60vh' }}>
-        Users : {JSON.stringify(data)}
+      <p>
+        {/* {JSON.stringify(data.items)} */}
+        <DataGrid {...data} />
       </p>
     </Layout>
   )

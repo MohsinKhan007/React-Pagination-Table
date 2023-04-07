@@ -7,7 +7,11 @@ import { IUsers, initialUsers } from '../interfaces/Users'
 //   error: Error
 // }
 
-const useFetch = (requestType?: string) => {
+const useFetch = (
+  currentPage?: number,
+  pageLimit?: number,
+  requestType?: string
+) => {
   const [data, setData] = useState<IUsers>(initialUsers)
 
   const [loading, setLoading] = useState(true)
@@ -16,9 +20,9 @@ const useFetch = (requestType?: string) => {
 
   const fetchAllUsers = () => {
     if (requestType && !apiCancelled) {
-      Api.getAllUsers()
+      Api.getAllUsers(currentPage, pageLimit)
         .then((resp) => {
-          console.log(`users ${JSON.stringify(resp.data)}`)
+          console.log(`users ${JSON.stringify(resp.data.items.length)}`)
           setData(resp.data)
         })
         .catch((err: any) => {

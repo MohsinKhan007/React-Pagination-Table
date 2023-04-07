@@ -10,8 +10,10 @@ export const Layout = ({ children }: Props) => {
   return (
     <>
       <Header />
-      {children}
-      <Footer />
+      <div className="container-fluid" style={{ padding: '0.5rem 1rem' }}>
+        {children}
+      </div>
+      {/* <Footer /> */}
     </>
   )
 }
