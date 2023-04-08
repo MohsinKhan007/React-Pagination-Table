@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Layout } from '../components/Layout'
 import useFetch from '../hooks/useFetch'
 
-import DataTable from '../components/DataTable'
+import { CustomTable } from '../components/CustomTable'
 import CustomPagination from '../components/CustomPagination'
 
 const Users = () => {
@@ -48,7 +48,7 @@ const Users = () => {
   return (
     <Layout>
       <>
-        <DataTable data={data} columns={columns} />
+        <CustomTable data={data} columns={columns} />
         <CustomPagination
           recordsPerPage={recordPerPage}
           totalRecords={dataCount}
