@@ -30,5 +30,3 @@ export const CustomTable = <T extends Record<string, any>>({
     </Table>
   )
 }
-
-export default CustomTable
