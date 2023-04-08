@@ -1,29 +1,39 @@
 import { useEffect, useState } from 'react'
 import { Api } from '../service/users.service'
-import { IUsers, initialUsers } from '../interfaces/Users'
-
-// interface State<T> {
-//   data?: T
-//   error: Error
-// }
+import {
+  initialTypeModifiedUser,
+  typemodifiedUser,
+} from '../interfaces/Users'
+import { formateDate } from '../util/dateFormatter'
 
 const useFetch = (
   currentPage?: number,
   pageLimit?: number,
   requestType?: string
 ) => {
-  const [data, setData] = useState<IUsers>(initialUsers)
-
+  const [data, setData] = useState<typemodifiedUser[]>(
+    initialTypeModifiedUser
+  )
+  const [dataCount, setDataCount] = useState<number>(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string>()
-  let apiCancelled = false
 
-  const fetchAllUsers = () => {
+  const fetchAllUsers = (apiCancelled: boolean) => {
     if (requestType && !apiCancelled) {
       Api.getAllUsers(currentPage, pageLimit)
         .then((resp) => {
-          console.log(`users ${JSON.stringify(resp.data.items.length)}`)
-          setData(resp.data)
+          const modifiedData: typemodifiedUser[] = resp.data.items.map(
+            (item) => ({
+              email: item.email,
+              userid: item.userid,
+              datecreated: formateDate(item.datecreated),
+              datemodified: formateDate(item.datemodified),
+              name: `${item.namefirst} ${item.namelast}`,
+            })
+          )
+
+          setData(modifiedData)
+          setDataCount(resp.data.totalcount)
         })
         .catch((err: any) => {
           setError(err.message)
@@ -36,17 +46,18 @@ const useFetch = (
   }
 
   useEffect(() => {
-    if (requestType == 'fetchAllUsers') fetchAllUsers()
+    let apiCancelled = false
+    if (requestType === 'fetchAllUsers') fetchAllUsers(apiCancelled)
 
     return () => {
       apiCancelled = true
-      setData(initialUsers)
+      setData(initialTypeModifiedUser)
       setLoading(true)
       setError('')
     }
-  }, [requestType])
+  }, [requestType, pageLimit, currentPage])
 
-  return { data, loading, error }
+  return { data, loading, error, dataCount }
 }
 
 export default useFetch

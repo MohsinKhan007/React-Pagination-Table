@@ -1,11 +1,20 @@
-import { IUsers } from '../interfaces/Users'
+import { IUser } from '../interfaces/Users'
 import { useEffect } from 'react'
 import { formateDate } from '../util/dateFormatter'
 
-export const DataGrid = (data: IUsers) => {
-  useEffect(() => {
-    console.log(`DataGrid: ${data.items.length}`)
-  })
+import React, { ReactNode } from 'react'
+type Column<T> = {
+  title: string
+  dataIndex: keyof T
+  render?: (value: any, record: T) => ReactNode
+}
+
+type Props<T> = {
+  data: T[]
+  columns: Column<T>[]
+}
+
+export function DataGrid<T>({ data, columns }: Props<T>) {
   return (
     <div>
       {!data ? (
@@ -14,26 +23,12 @@ export const DataGrid = (data: IUsers) => {
         <table className="table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Date Created</th>
-              <th>Date Modified</th>
+              {columns.map((column, index) => (
+                <th key={index}>{column.title}</th>
+              ))}
             </tr>
           </thead>
-          <tbody>
-            {data.items.map((data, index) => (
-              <tr key={index}>
-                <td>{data.userid}</td>
-                <td>
-                  {data.namefirst} {data.namelast}
-                </td>
-                <td>{data.email}</td>
-                <td>{formateDate(data.datecreated)}</td>
-                <td>{formateDate(data.datemodified)}</td>
-              </tr>
-            ))}
-          </tbody>
+          <tbody></tbody>
         </table>
       )}
     </div>

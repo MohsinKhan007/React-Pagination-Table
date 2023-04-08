@@ -1,18 +1,45 @@
-export interface IUsers {
-  items: [
-    {
-      userid: string
-      name: string
-      email: string
-      namelast: string
-      namefirst: string
-      datecreated: number
-      datemodified: number
-    }
-  ]
-  totalCount: number
+export interface IUser {
+  userid: string
+  name: string
+  email: string
+  namelast: string
+  namefirst: string
+  datecreated: number
+  datemodified: number
 }
-export const initialUsers: IUsers = {
+export type UserFetchData = {
+  items: IUser[]
+  totalcount: number
+}
+export type typemodifiedUser = {
+  userid: string
+  name: string
+  email: string
+  datecreated: string
+  datemodified: string
+}
+export const initialTypeModifiedUser: typemodifiedUser[] = [
+  {
+    userid: '',
+    name: '',
+    email: '',
+    datecreated: '',
+    datemodified: '',
+  },
+]
+export const initialUsersArray: IUser[] = [
+  {
+    userid: '',
+    name: '',
+    email: '',
+    namelast: '',
+    namefirst: '',
+    datecreated: 0,
+    datemodified: 0,
+  },
+]
+
+export const initialUserFetchData: UserFetchData = {
   items: [
     {
       userid: '',
@@ -24,5 +51,5 @@ export const initialUsers: IUsers = {
       datemodified: 0,
     },
   ],
-  totalCount: 0,
+  totalcount: 0,
 }
