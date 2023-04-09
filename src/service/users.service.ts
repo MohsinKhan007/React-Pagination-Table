@@ -1,4 +1,4 @@
-import { UserFetchData } from '../interfaces/Users'
+import { UserFetchData, typemodifiedUser } from '../interfaces/Users'
 import { API } from '../util/API'
 
 const getAllUsers = async (currentPage?: number, pageLimit?: number) => {
@@ -8,6 +8,8 @@ const getAllUsers = async (currentPage?: number, pageLimit?: number) => {
     `/users.json?start=${fetchPage}&num=${fetchLimit}`
   )
 }
+
+const deleteSelectedUsers = async (users: typemodifiedUser[]) => {}
 
 export const Api = {
   getAllUsers,

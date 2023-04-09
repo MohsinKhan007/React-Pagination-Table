@@ -27,7 +27,11 @@ const CustomPagination = ({
               number === currentPage ? 'active' : ''
             } `}
           >
-            <p onClick={() => handlePaginate(number)} className="page-link">
+            <p
+              onClick={() => handlePaginate(number)}
+              className="page-link"
+              style={{ cursor: 'pointer' }}
+            >
               {number}
             </p>
           </li>
