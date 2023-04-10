@@ -7,6 +7,7 @@ export type formState = {
   email: string
   namefirst: string
   namelast: string
+  userid: string
 }
 type CustomFormProps = {
   onClose: (title?: string) => void
@@ -27,6 +28,7 @@ export const CustomForm = (props: CustomFormProps) => {
     handleCreateOrUpdate,
   } = props
   const [isFormState, setFormState] = useState({
+    userid: '',
     email: '',
     namefirst: '',
     namelast: '',
@@ -37,11 +39,16 @@ export const CustomForm = (props: CustomFormProps) => {
 
   const saveUpdatedData = (data: typemodifiedUser) => {
     const firstLastName = data.name.split(' ')
+    console.log('firstLastName', typeof firstLastName[0])
+    const firstname: string = firstLastName[0]
+    const lastname: string = firstLastName[1]
+    console.log(data.userid)
     setFormState((prevState) => ({
       ...prevState,
       email: data.email,
-      firstName: firstLastName[0],
-      lastName: firstLastName[1],
+      namefirst: firstname,
+      namelast: lastname,
+      userid: data.userid,
     }))
   }
   const validate = () => {
@@ -79,6 +86,17 @@ export const CustomForm = (props: CustomFormProps) => {
     }
     return () => {
       isCancelled = true
+      // if(isFormParent==='update'){
+      setFormState({
+        userid: '',
+        email: '',
+        namefirst: '',
+        namelast: '',
+        namelastError: '',
+        namefirstError: '',
+        emailError: '',
+      })
+      // }
     }
   }, [isFormParent])
 
@@ -93,10 +111,10 @@ export const CustomForm = (props: CustomFormProps) => {
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
     if (validate()) {
+      console.log('handle submit', isFormState.userid)
+      const userid = isFormState.userid
+      handleCreateOrUpdate({ email, namefirst, namelast, userid })
     }
-    console.log('handle submit')
-
-    handleCreateOrUpdate({ email, namefirst, namelast })
   }
   const handleCancel = () => {
     console.log('handle cancel')
@@ -156,7 +174,7 @@ export const CustomForm = (props: CustomFormProps) => {
           Cancel
         </Button>
         <Button variant="primary" type="submit">
-          Submit
+          {isFormParent == 'update' ? `Update` : `Create`}
         </Button>
       </div>
     </Form>

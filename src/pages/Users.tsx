@@ -4,43 +4,75 @@ import useFetch from '../hooks/useFetch'
 
 import { CustomTable } from '../components/CustomTable'
 import CustomPagination from '../components/CustomPagination'
-import { typemodifiedUser } from '../interfaces/Users'
+import {
+  IUser,
+  initialTypeModifiedUser,
+  typemodifiedUser,
+} from '../interfaces/Users'
 import { Button } from 'react-bootstrap'
 import axios from 'axios'
 import { CustomModal } from '../components/CustomModal'
 import { CustomForm, formState } from '../components/CustomForm'
+import { AlertMsg } from '../util/AlertMsg'
+import { Loader } from '../util/Loader'
+import { Api } from '../service/users.service'
 
 const Users = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
-  // tbd :Only check the
+  const [reRender, setReRenderer] = useState(true)
   const [recordPerPage, setRecordsPerPage] = useState<number>(6)
   const { data, error, loading, dataCount } = useFetch(
     currentPage,
     recordPerPage,
-    'fetchAllUsers'
+    'fetchAllUsers',
+    reRender
   )
   const [selectedUsers, setSelectedUsers] = useState<typemodifiedUser[]>([])
   const [isModalState, setModalState] = useState({
     isOpen: false,
     title: '',
+    updateData: initialTypeModifiedUser,
+  })
+
+  const [msg, setMsg] = useState({
+    sucessMsg: '',
+    errorMsg: '',
   })
 
   const handleDeleteSelected = () => {
     console.log('handle Delete Selected')
     console.log(selectedUsers)
-    toggleModal('Delete Users')
+    Api.deleteSelectedUsers(selectedUsers)
+      .then((resp) => {
+        console.log(resp)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        setReRenderer((prevState) => !prevState)
+        // toggleModal()
+      })
+    // toggleModal('Delete Users')
   }
   const createNewUser = () => {
     console.log('create new user')
     toggleModal('Add User')
   }
-  const toggleModal = (title?: string) => {
+
+  const updateUser = (user: typemodifiedUser) => {
+    console.log('update user', user)
+    toggleModal('Update User', user)
+  }
+
+  const toggleModal = (title?: string, user?: typemodifiedUser) => {
     console.log('Toogle modal title', title)
 
     setModalState((prevState) => ({
       ...prevState,
       title: !title ? '' : title,
       isOpen: !prevState.isOpen,
+      updateData: user ? user : initialTypeModifiedUser,
     }))
   }
   const callUsers = () => {
@@ -74,20 +106,63 @@ const Users = () => {
     console.log('handle Paginate')
     setCurrentPage(number)
   }
-  const handleCreateOrUpdate = (data: formState) => {
-    console.log('handle Parent submit', data)
-    // Call Api
+  const handleCreateOrUpdate = ({
+    email,
+    namefirst,
+    namelast,
+    userid,
+  }: formState) => {
+    // Add the current time and date in the interger format that is required by the API
+    // in case of updated, only change the modified date and in case of create change both
+    const data = {
+      email,
+      namefirst,
+      namelast,
+    }
+    console.log(data)
+    console.log(userid, ' userid')
+    if (userid === '') {
+      console.log('handle create')
+      console.log(data)
+      Api.createUser(data)
+        .then((resp) => {
+          console.log(resp, ' Response')
+          setMsg({ sucessMsg: 'User Added Sucessfully', errorMsg: '' })
+        })
+        .catch((err) => {
+          setMsg({ sucessMsg: '', errorMsg: err })
+        })
+        .finally(() => {
+          setReRenderer((prevState) => !prevState)
+          toggleModal()
+        })
+    } else {
+      console.log('handle update')
+      Api.updateUser(userid, data)
+        .then((resp) => {
+          console.log(resp, ' Response')
+          setMsg({ sucessMsg: 'User Updated Sucessfully', errorMsg: '' })
+        })
+        .catch((err) => {
+          setMsg({ sucessMsg: '', errorMsg: err })
+        })
+        .finally(() => {
+          setReRenderer((prevState) => !prevState)
+          toggleModal()
+        })
+      console.log(data)
+    }
   }
   if (loading)
     return (
       <Layout>
-        <h2>loading</h2>
+        <Loader />
       </Layout>
     )
   if (error)
     return (
       <Layout>
-        <h2>{error}</h2>
+        <AlertMsg message={error} type="danger" />
       </Layout>
     )
 
@@ -106,6 +181,7 @@ const Users = () => {
           columns={columns}
           selectedUsers={selectedUsers}
           setSelectedUsers={setSelectedUsers}
+          updateUser={updateUser}
         />
         <CustomPagination
           recordsPerPage={recordPerPage}
@@ -122,8 +198,9 @@ const Users = () => {
           </Button>
         </div>
       </>
-      <button onClick={callUsers}>handle Delete Dummy request</button>
+
       {JSON.stringify(isModalState)}
+      {JSON.stringify(msg)}
       {/* <button onClick={() => toggleModal('')}>Toggle Modal</button> */}
       <CustomModal
         isOpen={isModalState.isOpen}
@@ -142,7 +219,7 @@ const Users = () => {
               handleCreateOrUpdate={handleCreateOrUpdate}
               isFormParent="update"
               onClose={toggleModal}
-              data={data[0]}
+              data={isModalState.updateData}
             />
           )
         ) : (

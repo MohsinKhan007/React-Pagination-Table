@@ -18,15 +18,21 @@ export type typemodifiedUser = {
   datecreated: string
   datemodified: string
 }
-export const initialTypeModifiedUser: typemodifiedUser[] = [
-  {
-    userid: '',
-    name: '',
-    email: '',
-    datecreated: '',
-    datemodified: '',
-  },
-]
+// export const
+export const initialTypeModifiedUser: typemodifiedUser = {
+  userid: '',
+  name: '',
+  email: '',
+  datecreated: '',
+  datemodified: '',
+}
+export const initialTypeModifiedUserArray: typemodifiedUser[] = [{
+  userid: '',
+  name: '',
+  email: '',
+  datecreated: '',
+  datemodified: '',
+}]
 export const initialUsersArray: IUser[] = [
   {
     userid: '',

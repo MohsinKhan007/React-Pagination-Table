@@ -9,8 +9,52 @@ const getAllUsers = async (currentPage?: number, pageLimit?: number) => {
   )
 }
 
-const deleteSelectedUsers = async (users: typemodifiedUser[]) => {}
+const deleteSelectedUsers = async (users: typemodifiedUser[]) => {
+  const deleteAllUsers = users.map(({ userid }) =>
+    API.delete(`/users/${userid}.json`)
+  )
+  return Promise.all(deleteAllUsers).then((res) => {
+    const responses: number[] = []
+    res.forEach((element, index) => {
+      responses.push(element.status)
+    })
+    console.log(responses, ' responses')
+    if (
+      responses.includes(200) &&
+      responses.every((resp, _, res) => resp === res[0])
+    ) {
+      return res[0]
+    }
+  })
+}
+
+const createUser = async (users: {
+  namelast: string
+  namefirst: string
+  email: string
+}) => {
+  return API.post('/users.json', users)
+}
+
+const updateUser = async (
+  userid: string,
+  data: {
+    namelast: string
+    namefirst: string
+    email: string
+  }
+) => {
+  const { namelast, namefirst, email } = data
+  return API.put(`/users/${userid}.json`, {
+    namelast,
+    namefirst,
+    email,
+  })
+}
 
 export const Api = {
   getAllUsers,
+  createUser,
+  deleteSelectedUsers,
+  updateUser,
 }

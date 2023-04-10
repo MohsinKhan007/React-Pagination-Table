@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react'
 
 import { Routes, Route } from 'react-router-dom'
 import { Layout } from './components/Layout'
+import { Loader } from './util/Loader'
 // importing pages as Lazy for code splitting for optimization
 const Users = lazy(() => import('./pages/Users'))
 const PageNotFound = lazy(() => import('./pages/PageNotFound'))
@@ -17,7 +18,13 @@ export const AppRoutes: React.FC = () => {
   ]
 
   return (
-    <Suspense fallback={<Layout>...loading....</Layout>}>
+    <Suspense
+      fallback={
+        <Layout>
+          <Loader />
+        </Layout>
+      }
+    >
       <Routes>
         {routes.map(({ path, element }) => (
           <Route key={path} path={path} element={element} />
