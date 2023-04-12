@@ -1,6 +1,6 @@
 import React from 'react'
 
-type CustomPaginationrProps = {
+type CustomPaginationProps = {
   recordsPerPage: number
   totalRecords: number
   handlePaginate: (number: number) => void
@@ -11,15 +11,24 @@ const CustomPagination = ({
   totalRecords,
   handlePaginate,
   currentPage,
-}: CustomPaginationrProps) => {
+}: CustomPaginationProps) => {
   const pageNumbers = []
-  for (let i = 1; i <= Math.ceil(totalRecords / recordsPerPage); i++) {
+  const totalPagesCount = Math.ceil(totalRecords / recordsPerPage)
+  for (let i = 1; i <= totalPagesCount; i++) {
     pageNumbers.push(i)
   }
 
   return (
     <nav>
-      <ul className="pagination" style={{ justifyContent: 'center' }}>
+      <ul className="pagination justifyCctr">
+        <li key={1} className={`page-item`}>
+          <p
+            onClick={() => handlePaginate(1)}
+            className="page-link cursor-pointer"
+          >
+            {'<<'}
+          </p>
+        </li>
         {pageNumbers.map((number) => (
           <li
             key={number}
@@ -29,13 +38,18 @@ const CustomPagination = ({
           >
             <p
               onClick={() => handlePaginate(number)}
-              className="page-link"
-              style={{ cursor: 'pointer' }}
+              className="page-link cursor-pointer"
             >
               {number}
             </p>
           </li>
         ))}
+        <p
+          onClick={() => handlePaginate(totalPagesCount)}
+          className="page-link cursor-pointer"
+        >
+          {'>>'}
+        </p>
       </ul>
     </nav>
   )

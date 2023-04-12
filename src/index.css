@@ -19,9 +19,52 @@ body {
   display: flex;
   flex-direction: column;
 }
-footer {
+
+.footer-elements {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.footer-elements .footer-btn {
+  align-self: center;
+}
+.changebg:hover {
+  background-color: #b14242;
+}
+.changebg::hover::after {
+  content: ' update user ';
   position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 50px;
+  top: 0;
+  right: 0;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.justifyCspBtw {
+  justify-content: space-between !important;
+}
+.justifyCctr {
+  justify-content: center;
+}
+.flex {
+  display: flex;
+}
+.flexdCln {
+  flex-direction: column !important;
+}
+@media screen and (max-width: 420px) {
+  .my-modal .modal-dialog {
+    max-width: 57%;
+  }
+  .footer-elements {
+    flex-direction: column;
+    align-items: center;
+  }
+  .footer-elements .footer-btn {
+    align-self: auto;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
 }

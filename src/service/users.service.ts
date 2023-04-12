@@ -18,7 +18,7 @@ const deleteSelectedUsers = async (users: typemodifiedUser[]) => {
     res.forEach((element, index) => {
       responses.push(element.status)
     })
-    console.log(responses, ' responses')
+
     if (
       responses.includes(200) &&
       responses.every((resp, _, res) => resp === res[0])

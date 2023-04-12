@@ -18,7 +18,7 @@ export type typemodifiedUser = {
   datecreated: string
   datemodified: string
 }
-// export const
+
 export const initialTypeModifiedUser: typemodifiedUser = {
   userid: '',
   name: '',
@@ -26,13 +26,15 @@ export const initialTypeModifiedUser: typemodifiedUser = {
   datecreated: '',
   datemodified: '',
 }
-export const initialTypeModifiedUserArray: typemodifiedUser[] = [{
-  userid: '',
-  name: '',
-  email: '',
-  datecreated: '',
-  datemodified: '',
-}]
+export const initialTypeModifiedUserArray: typemodifiedUser[] = [
+  {
+    userid: '',
+    name: '',
+    email: '',
+    datecreated: '',
+    datemodified: '',
+  },
+]
 export const initialUsersArray: IUser[] = [
   {
     userid: '',
@@ -58,4 +60,11 @@ export const initialUserFetchData: UserFetchData = {
     },
   ],
   totalcount: 0,
+}
+
+export type sendUser = {
+  email: string
+  namefirst: string
+  namelast: string
+  userid?: string
 }

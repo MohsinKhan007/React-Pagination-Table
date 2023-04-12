@@ -8,7 +8,7 @@ type AlertMsgProps = {
 
 export const AlertMsg = ({ message, type }: AlertMsgProps) => {
   const [show, setShow] = useState(true)
-  console.log('message in Alert Props', message)
+
   if (show) {
     return (
       <Alert

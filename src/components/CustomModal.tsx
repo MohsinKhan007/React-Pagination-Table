@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal } from 'react-bootstrap'
-
+import '../../src/index.css'
 interface ModalProps {
   title: string
   children: React.ReactNode
@@ -15,8 +15,8 @@ export const CustomModal: React.FC<ModalProps> = ({
   onClose,
 }) => {
   return (
-    <Modal show={isOpen} onHide={onClose}>
-      <Modal.Header style={{ justifyContent: 'center' }}>
+    <Modal className="my-modal" show={isOpen} onHide={onClose}>
+      <Modal.Header className="justifyCctr">
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ padding: '1rem 2rem 1rem 2rem' }}>

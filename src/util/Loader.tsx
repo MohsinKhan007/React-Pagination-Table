@@ -1,10 +1,7 @@
 import { Spinner } from 'react-bootstrap'
 
 export const Loader = () => (
-  <div
-    className="d-flex align-items-center justify-content-center"
-    style={{ flexDirection: 'column' }}
-  >
+  <div className="d-flex align-items-center justify-content-center flexdCln">
     <Spinner
       animation="border"
       variant="primary"

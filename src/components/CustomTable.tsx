@@ -1,60 +1,74 @@
-import React, { useState } from 'react'
-import { OverlayTrigger, Table, Tooltip } from 'react-bootstrap'
-
+import React from 'react'
+import { Table } from 'react-bootstrap'
+// Add overlay and bootstrap work and manufactors bootstrap Alert  UI
 interface TableProps<T> {
   data: T[]
   columns: { key: string; title: string }[]
-  selectedUsers: T[]
-  setSelectedUsers: React.Dispatch<React.SetStateAction<T[]>>
+  selectedRows: T[]
+  setSelectedRows: React.Dispatch<React.SetStateAction<T[]>>
   updateUser: (data: T) => void
 }
 
 export const CustomTable = <T extends Record<string, any>>({
   data,
   columns,
-  selectedUsers,
-  setSelectedUsers,
+  selectedRows,
+  setSelectedRows,
   updateUser,
 }: TableProps<T>) => {
   const handleRowSelect = (row: T) => {
-    if (selectedUsers.includes(row)) {
-      setSelectedUsers(selectedUsers.filter((r) => r !== row))
+    if (selectedRows.includes(row)) {
+      setSelectedRows(selectedRows.filter((r) => r !== row))
     } else {
-      setSelectedUsers([...selectedUsers, row])
+      setSelectedRows([...selectedRows, row])
     }
   }
   const updateClicked = (data: T) => () => {
-    // console.log('Update PopUp', column)
     updateUser(data)
   }
   return (
-    <Table responsive>
-      <thead>
-        <tr>
-          <th>#</th>
-          {columns.map((column, index) => (
-            <th key={column.key}>{column.title}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((item, index) => (
-          <tr key={index}>
-            <td>
-              <input
-                type="checkbox"
-                checked={selectedUsers.includes(item)}
-                onChange={() => handleRowSelect(item)}
-              />
-            </td>
+    <div
+      className="table-responsive-sm"
+      style={{ height: '65vh', overflowY: 'auto' }}
+    >
+      <Table responsive>
+        <thead>
+          <tr>
+            <th>#</th>
             {columns.map((column, index) => (
-              <td key={index} onClick={updateClicked(item)}>
-                {item[column.key]}
-              </td>
+              <th key={column.key}>{column.title}</th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {data.map((item, index) => (
+            <tr
+              key={index}
+              className="changebg"
+              data-toggle="tooltip"
+              data-placement="right"
+              title="Click to Update"
+            >
+              <td>
+                <input
+                  type="checkbox"
+                  checked={selectedRows.includes(item)}
+                  onChange={() => handleRowSelect(item)}
+                />
+              </td>
+              {columns.map((column, index) => (
+                <td
+                  className="cursor-pointer"
+                  key={index}
+                  onClick={updateClicked(item)}
+                >
+                  {item[column.key]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
   )
 }

@@ -13,20 +13,12 @@ type CustomFormProps = {
   onClose: (title?: string) => void
   handleCreateOrUpdate: (data: formState) => void
   data?: typemodifiedUser
-  title?: string
-  children?: React.ReactNode
+
   isFormParent?: 'create' | 'update'
 }
 
 export const CustomForm = (props: CustomFormProps) => {
-  const {
-    title,
-    children,
-    isFormParent,
-    onClose,
-    data,
-    handleCreateOrUpdate,
-  } = props
+  const { isFormParent, onClose, data, handleCreateOrUpdate } = props
   const [isFormState, setFormState] = useState({
     userid: '',
     email: '',
@@ -39,10 +31,10 @@ export const CustomForm = (props: CustomFormProps) => {
 
   const saveUpdatedData = (data: typemodifiedUser) => {
     const firstLastName = data.name.split(' ')
-    console.log('firstLastName', typeof firstLastName[0])
+
     const firstname: string = firstLastName[0]
     const lastname: string = firstLastName[1]
-    console.log(data.userid)
+
     setFormState((prevState) => ({
       ...prevState,
       email: data.email,
@@ -63,7 +55,7 @@ export const CustomForm = (props: CustomFormProps) => {
       namelastError = 'LastName is required'
     }
 
-    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    const reg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
     if (!email || reg.test(email) === false) {
       emailError = 'Email Field is Invalid '
     }
@@ -86,7 +78,7 @@ export const CustomForm = (props: CustomFormProps) => {
     }
     return () => {
       isCancelled = true
-      // if(isFormParent==='update'){
+
       setFormState({
         userid: '',
         email: '',
@@ -96,9 +88,8 @@ export const CustomForm = (props: CustomFormProps) => {
         namefirstError: '',
         emailError: '',
       })
-      // }
     }
-  }, [isFormParent])
+  }, [isFormParent, data])
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -111,13 +102,11 @@ export const CustomForm = (props: CustomFormProps) => {
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
     if (validate()) {
-      console.log('handle submit', isFormState.userid)
       const userid = isFormState.userid
       handleCreateOrUpdate({ email, namefirst, namelast, userid })
     }
   }
   const handleCancel = () => {
-    console.log('handle cancel')
     onClose()
   }
   let {
@@ -143,7 +132,7 @@ export const CustomForm = (props: CustomFormProps) => {
           {namefirstError}
         </Form.Text>
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formLirstName">
+      <Form.Group className="mb-3" controlId="formName">
         <Form.Label>Last name</Form.Label>
         <Form.Control
           type="text"
@@ -169,12 +158,12 @@ export const CustomForm = (props: CustomFormProps) => {
           {emailError}
         </Form.Text>
       </Form.Group>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div className="cursor-pointer flex justifyCspBtw">
         <Button onClick={handleCancel} variant="danger" type="button">
           Cancel
         </Button>
         <Button variant="primary" type="submit">
-          {isFormParent == 'update' ? `Update` : `Create`}
+          {isFormParent === 'update' ? `Update` : `Create`}
         </Button>
       </div>
     </Form>

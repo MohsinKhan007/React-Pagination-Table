@@ -1,33 +1,38 @@
 import React, { useState } from 'react'
 import { Layout } from '../components/Layout'
 import useFetch from '../hooks/useFetch'
-
 import { CustomTable } from '../components/CustomTable'
 import CustomPagination from '../components/CustomPagination'
 import {
-  IUser,
   initialTypeModifiedUser,
   typemodifiedUser,
 } from '../interfaces/Users'
-import { Button } from 'react-bootstrap'
-import axios from 'axios'
+import { Button, Container } from 'react-bootstrap'
+import { usercolumns, recordPerPage } from '../consts/users'
 import { CustomModal } from '../components/CustomModal'
 import { CustomForm, formState } from '../components/CustomForm'
 import { AlertMsg } from '../util/AlertMsg'
 import { Loader } from '../util/Loader'
 import { Api } from '../service/users.service'
+import { httpResponses } from '../util/httpResponses'
+import { AxiosErrorInterface } from '../interfaces/axios'
+import { useSelected } from '../hooks/useSelected'
+import { useCurrentPage } from '../hooks/useCurrentPage'
 
 const Users = () => {
-  const [currentPage, setCurrentPage] = useState<number>(1)
+  const { currentPage, setCurrentPage } = useCurrentPage(1)
+
   const [reRender, setReRenderer] = useState(true)
-  const [recordPerPage, setRecordsPerPage] = useState<number>(6)
+
   const { data, error, loading, dataCount } = useFetch(
     currentPage,
     recordPerPage,
     'fetchAllUsers',
     reRender
   )
-  const [selectedUsers, setSelectedUsers] = useState<typemodifiedUser[]>([])
+
+  const { selectedRows, setSelectedRows } = useSelected<typemodifiedUser>()
+
   const [isModalState, setModalState] = useState({
     isOpen: false,
     title: '',
@@ -40,34 +45,39 @@ const Users = () => {
   })
 
   const handleDeleteSelected = () => {
-    console.log('handle Delete Selected')
-    console.log(selectedUsers)
-    Api.deleteSelectedUsers(selectedUsers)
-      .then((resp) => {
-        console.log(resp)
+    if (selectedRows.length) {
+      Api.deleteSelectedUsers(selectedRows)
+        .then((resp) => {
+          setMsg({ sucessMsg: 'Users Deleted Sucessfully', errorMsg: '' })
+        })
+        .catch((err: AxiosErrorInterface) => {
+          setMsg({
+            sucessMsg: '',
+            errorMsg: httpResponses(err.response.data.statuscode!)!,
+          })
+          throw new Error(err.stack)
+        })
+        .finally(() => {
+          setSelectedRows([])
+          setReRenderer((prevState) => !prevState)
+        })
+    } else {
+      setMsg({
+        sucessMsg: '',
+        errorMsg: 'Please select at least one user to delete',
       })
-      .catch((err) => {
-        console.log(err)
-      })
-      .finally(() => {
-        setReRenderer((prevState) => !prevState)
-        // toggleModal()
-      })
-    // toggleModal('Delete Users')
+    }
+    toggleModal()
   }
   const createNewUser = () => {
-    console.log('create new user')
     toggleModal('Add User')
   }
 
   const updateUser = (user: typemodifiedUser) => {
-    console.log('update user', user)
     toggleModal('Update User', user)
   }
 
   const toggleModal = (title?: string, user?: typemodifiedUser) => {
-    console.log('Toogle modal title', title)
-
     setModalState((prevState) => ({
       ...prevState,
       title: !title ? '' : title,
@@ -75,82 +85,59 @@ const Users = () => {
       updateData: user ? user : initialTypeModifiedUser,
     }))
   }
-  const callUsers = () => {
-    console.log('call users')
-    const users = [{ id: '1' }, { id: '2' }, { id: '3' }]
 
-    const deleteRequest = users.map(({ id }) =>
-      axios.get(`https://jsonplaceholder.typicode.com/todos/${id}`)
-    )
-    Promise.all(deleteRequest).then((res) => {
-      const responses: number[] = []
-      res.forEach((element, index) => {
-        responses.push(element.status)
-      })
-      console.log(responses, ' responses')
-      if (
-        responses.includes(200) &&
-        responses.every((resp, _, res) => resp === res[0])
-      ) {
-        console.log('all users deleted')
-      }
-      console.log(res, ' promiseAll response')
+  const handlePaginate = (number: number) => {
+    setCurrentPage(number)
+    setMsg({
+      sucessMsg: '',
+      errorMsg: '',
     })
   }
 
-  // const indexOfLastRecord = currentPage * recordPerPage
-  // const indexOfFirstRecord = indexOfLastRecord - recordPerPage
-  // const currentRecords = data.slice(indexOfFirstRecord, indexOfLastRecord)
-
-  const handlePaginate = (number: number) => {
-    console.log('handle Paginate')
-    setCurrentPage(number)
-  }
   const handleCreateOrUpdate = ({
     email,
     namefirst,
     namelast,
     userid,
   }: formState) => {
-    // Add the current time and date in the interger format that is required by the API
-    // in case of updated, only change the modified date and in case of create change both
     const data = {
       email,
       namefirst,
       namelast,
     }
-    console.log(data)
-    console.log(userid, ' userid')
+
     if (userid === '') {
-      console.log('handle create')
-      console.log(data)
       Api.createUser(data)
         .then((resp) => {
-          console.log(resp, ' Response')
           setMsg({ sucessMsg: 'User Added Sucessfully', errorMsg: '' })
         })
-        .catch((err) => {
-          setMsg({ sucessMsg: '', errorMsg: err })
+        .catch((err: AxiosErrorInterface) => {
+          setMsg({
+            sucessMsg: '',
+            errorMsg: httpResponses(err.response.data.statuscode!)!,
+          })
+          throw new Error(err.stack)
         })
         .finally(() => {
           setReRenderer((prevState) => !prevState)
           toggleModal()
         })
     } else {
-      console.log('handle update')
       Api.updateUser(userid, data)
         .then((resp) => {
-          console.log(resp, ' Response')
           setMsg({ sucessMsg: 'User Updated Sucessfully', errorMsg: '' })
         })
-        .catch((err) => {
-          setMsg({ sucessMsg: '', errorMsg: err })
+        .catch((err: AxiosErrorInterface) => {
+          setMsg({
+            sucessMsg: '',
+            errorMsg: httpResponses(err.response.data.statuscode!)!,
+          })
+          throw new Error(err.stack)
         })
         .finally(() => {
           setReRenderer((prevState) => !prevState)
           toggleModal()
         })
-      console.log(data)
     }
   }
   if (loading)
@@ -166,42 +153,48 @@ const Users = () => {
       </Layout>
     )
 
-  const columns = [
-    { title: 'Name', key: 'name' },
-    { title: 'Email', key: 'email' },
-    { title: 'Date Created', key: 'datecreated' },
-    { title: 'Date Modified', key: 'datemodified' },
-  ]
-
   return (
     <Layout>
       <>
+        {msg.sucessMsg && (
+          <AlertMsg message={msg.sucessMsg} type="success" />
+        )}
+        {msg.errorMsg && <AlertMsg message={msg.errorMsg} type="danger" />}
+
         <CustomTable
           data={data}
-          columns={columns}
-          selectedUsers={selectedUsers}
-          setSelectedUsers={setSelectedUsers}
+          columns={usercolumns}
+          selectedRows={selectedRows}
+          setSelectedRows={setSelectedRows}
           updateUser={updateUser}
         />
-        <CustomPagination
-          recordsPerPage={recordPerPage}
-          totalRecords={dataCount}
-          handlePaginate={handlePaginate}
-          currentPage={currentPage}
-        />
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button variant="danger" onClick={handleDeleteSelected}>
+
+        <div className="footer-elements">
+          <Button
+            variant="danger"
+            onClick={() => toggleModal('Delete Users')}
+            className="footer-btn"
+          >
             Delete Selected
           </Button>
-          <Button variant="primary" onClick={createNewUser}>
+          <div>
+            <CustomPagination
+              recordsPerPage={recordPerPage}
+              totalRecords={dataCount}
+              handlePaginate={handlePaginate}
+              currentPage={currentPage}
+            />
+          </div>
+          <Button
+            variant="primary"
+            className="footer-btn"
+            onClick={createNewUser}
+          >
             Add User
           </Button>
         </div>
       </>
 
-      {JSON.stringify(isModalState)}
-      {JSON.stringify(msg)}
-      {/* <button onClick={() => toggleModal('')}>Toggle Modal</button> */}
       <CustomModal
         isOpen={isModalState.isOpen}
         title={isModalState.title}
@@ -223,7 +216,13 @@ const Users = () => {
             />
           )
         ) : (
-          <h1>Modal Content</h1>
+          // is ko handle karna sahi
+          <Container fluid>
+            <p>Are you sure you want to delete the selected users?</p>
+            <Button variant="danger" onClick={handleDeleteSelected}>
+              Delete Selected
+            </Button>
+          </Container>
         )}
       </CustomModal>
     </Layout>

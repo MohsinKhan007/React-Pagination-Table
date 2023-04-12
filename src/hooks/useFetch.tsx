@@ -6,6 +6,7 @@ import {
 } from '../interfaces/Users'
 import { formateDate } from '../util/dateFormatter'
 import { httpResponses } from '../util/httpResponses'
+import { AxiosErrorInterface } from '../interfaces/axios'
 
 const useFetch = (
   currentPage?: number,
@@ -38,17 +39,16 @@ const useFetch = (
             setData(modifiedData)
             setDataCount(resp.data.totalcount)
           })
-          .catch((err: any) => {
-            const responseText = httpResponses(err.response.status)
-            setError(responseText)
-            throw new Error(responseText as string)
+          .catch((err: AxiosErrorInterface) => {
+            setError(httpResponses(err.response.data.statuscode!)!)
+            throw new Error(err.stack)
           })
           .finally(() => {
             setLoading(false)
           })
       }
     },
-    [requestType, currentPage, pageLimit, reRender]
+    [requestType, currentPage, reRender]
   )
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const useFetch = (
       setLoading(true)
       setError('')
     }
-  }, [requestType, pageLimit, currentPage, fetchAllUsers])
+  }, [requestType, currentPage, fetchAllUsers])
 
   return { data, loading, error, dataCount }
 }
