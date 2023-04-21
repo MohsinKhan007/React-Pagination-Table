@@ -1,4 +1,4 @@
-# Sitoo Full Stack Developer Application Tehnical Test
+# React Pagination table for hanlding API and diplaying data in paginated Generic Bootstarp table using Typescript
 
 ## Develope CRUD application frontend using the endpoints provided by sitoo api
 
