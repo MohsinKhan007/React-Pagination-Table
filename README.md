@@ -1,6 +1,6 @@
 # React Pagination table for hanlding API and diplaying data in paginated Generic Bootstarp table using Typescript
 
-## Develope CRUD application frontend using the endpoints p
+## Develope CRUD application frontend using the endpoints
 
 ### before starting the application, run these commands
 
