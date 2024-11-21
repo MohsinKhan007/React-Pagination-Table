@@ -1,6 +1,6 @@
 # React Pagination table for hanlding API and diplaying data in paginated Generic Bootstarp table using Typescript
 
-## Develope CRUD application frontend using the endpoints provided by sitoo api
+## Develope CRUD application frontend using the endpoints p
 
 ### before starting the application, run these commands
 
